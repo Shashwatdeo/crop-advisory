@@ -13,8 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Call CropSeeder
-        $this->call(CropSeeder::class);
+        $this->call([
+            AdminUserSeeder::class,
+            // Call CropSeeder
+            CropSeeder::class,
+            PestAlertSeeder::class,
+            WeatherAlertSeeder::class,
+            CropSuggestionSeeder::class,
+        ]);
 
         // Create a test user
         User::factory()->create([

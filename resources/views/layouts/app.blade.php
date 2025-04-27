@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <title>Crop Advisory and Farmer's Companion</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
     <style>
         :root {
             --primary-color: #2E7D32;
@@ -65,8 +68,15 @@
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             flex-wrap: wrap;
+            padding: 0 2rem;
+        }
+
+        nav ul .nav-left,
+        nav ul .nav-right {
+            display: flex;
+            align-items: center;
         }
 
         nav ul li {
@@ -323,12 +333,47 @@
     <!-- Navbar Section -->
     <nav>
         <ul>
-            <li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="{{ route('crops.index') }}" class="{{ request()->is('crops') ? 'active' : '' }}"><i class="fas fa-seedling"></i> All Crops</a></li>
-            <li><a href="{{ route('crops.create') }}" class="{{ request()->is('crops/create') ? 'active' : '' }}"><i class="fas fa-plus-circle"></i> Add Crop</a></li>
-            <li><a href="{{ route('weather.index') }}" class="{{ request()->is('weather') ? 'active' : '' }}"><i class="fas fa-cloud-sun"></i> Weather</a></li>
-            <li><a href="{{ route('pest-alerts.index') }}" class="{{ request()->is('pest-alerts') ? 'active' : '' }}"><i class="fas fa-bug"></i> Pest Alerts</a></li>
-            <li><a href="{{ route('crop-suggestions.index') }}" class="{{ request()->is('crop-suggestions') ? 'active' : '' }}"><i class="fas fa-lightbulb"></i> Crop Suggestions</a></li>
+            <div class="nav-left">
+                <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">
+                    <i class="fas fa-home"></i>Home
+                </a></li>
+                <li><a href="{{ route('crops.index') }}" class="{{ request()->routeIs('crops.*') ? 'active' : '' }}">
+                    <i class="fas fa-seedling"></i>Crops
+                </a></li>
+                <li><a href="{{ route('weather.index') }}" class="{{ request()->routeIs('weather.*') ? 'active' : '' }}">
+                    <i class="fas fa-cloud-sun"></i>Weather
+                </a></li>
+                <li><a href="{{ route('pest-alerts.index') }}" class="{{ request()->routeIs('pest-alerts.*') ? 'active' : '' }}">
+                    <i class="fas fa-bug"></i>Pest Alerts
+                </a></li>
+                <li><a href="{{ route('crop-suggestions.index') }}" class="{{ request()->routeIs('crop-suggestions.*') ? 'active' : '' }}">
+                    <i class="fas fa-lightbulb"></i>Crop Suggestions
+                </a></li>
+            </div>
+            <div class="nav-right">
+                @guest
+                    <li><a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">
+                        <i class="fas fa-sign-in-alt"></i>Sign In
+                    </a></li>
+                    <li><a href="{{ route('register') }}" class="{{ request()->routeIs('register') ? 'active' : '' }}">
+                        <i class="fas fa-user-plus"></i>Register
+                    </a></li>
+                @else
+                    @if(Auth::user()->is_admin)
+                        <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.*') ? 'active' : '' }}">
+                            <i class="fas fa-tachometer-alt"></i>Admin Dashboard
+                        </a></li>
+                    @endif
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                            @csrf
+                            <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">
+                                <i class="fas fa-sign-out-alt"></i>Logout
+                            </a>
+                        </form>
+                    </li>
+                @endguest
+            </div>
         </ul>
     </nav>
 
@@ -377,6 +422,7 @@
     };
 </script>
 
+    @stack('scripts')
 
 </body>
 </html>

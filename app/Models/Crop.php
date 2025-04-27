@@ -10,9 +10,15 @@ class Crop extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 
-        'description', 
-        'ideal_conditions',
+        'name',
+        'season',
+        'water_requirement',
+        'temperature_range',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 }
 

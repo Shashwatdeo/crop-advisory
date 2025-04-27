@@ -1,0 +1,225 @@
+/* Crop Card Styles */
+.crop-card {
+    @apply bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02];
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.crop-card-image {
+    @apply w-full h-48 object-cover transition-transform duration-300;
+    filter: brightness(0.9);
+}
+
+.crop-card:hover .crop-card-image {
+    transform: scale(1.05);
+    filter: brightness(1);
+}
+
+.crop-card-content {
+    @apply p-6;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 1));
+}
+
+.crop-card-title {
+    @apply text-xl font-bold mb-2;
+    background: linear-gradient(45deg, #2E7D32, #1B5E20);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.crop-card-details {
+    @apply grid grid-cols-2 gap-4 mt-4;
+}
+
+.crop-detail-item {
+    @apply flex items-center space-x-2;
+    transition: all 0.3s ease;
+}
+
+.crop-detail-item:hover {
+    transform: translateX(5px);
+}
+
+.crop-detail-icon {
+    @apply text-lg;
+    transition: all 0.3s ease;
+}
+
+.crop-detail-item:hover .crop-detail-icon {
+    transform: scale(1.2);
+}
+
+/* Filter Section Styles */
+.filter-section {
+    @apply rounded-xl shadow-lg p-6 mb-8;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f9f0 100%);
+    border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+.filter-title {
+    @apply text-xl font-semibold mb-4 flex items-center;
+    background: linear-gradient(45deg, #2E7D32, #1B5E20);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.filter-title i {
+    @apply mr-2;
+    color: #2E7D32;
+}
+
+.filter-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4;
+}
+
+.filter-group {
+    @apply space-y-2;
+}
+
+.filter-label {
+    @apply block text-sm font-medium;
+    color: #2E7D32;
+}
+
+.filter-select {
+    @apply w-full rounded-lg shadow-sm focus:ring focus:ring-opacity-50 transition-all duration-200;
+    border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+.filter-select:focus {
+    border-color: #2E7D32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+/* Hero Section */
+.crop-hero {
+    @apply relative h-64 rounded-xl overflow-hidden mb-8;
+    background: linear-gradient(135deg, #2E7D32, #1B5E20);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.crop-hero-content {
+    @apply absolute inset-0 flex items-center justify-center text-center text-white;
+}
+
+.crop-hero-title {
+    @apply text-4xl md:text-5xl font-bold mb-4;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(45deg, #ffffff, #e0f7fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.crop-hero-subtitle {
+    @apply text-xl md:text-2xl;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    color: #e0f7fa;
+}
+
+/* Animation Classes */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Responsive Grid */
+.crop-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+/* Empty State */
+.empty-state {
+    @apply text-center py-12 rounded-xl;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e9 100%);
+    border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+.empty-state-icon {
+    @apply text-6xl mb-4;
+    background: linear-gradient(45deg, #2E7D32, #1B5E20);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.empty-state-text {
+    @apply text-xl;
+    color: #2E7D32;
+}
+
+/* Loading State */
+.loading-skeleton {
+    @apply animate-pulse;
+}
+
+.loading-card {
+    @apply rounded-xl h-64;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Seasonal Badge */
+.seasonal-badge {
+    @apply absolute top-2 right-2 px-3 py-1 rounded-full text-sm font-semibold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.spring-badge {
+    @apply bg-gradient-to-r from-green-100 to-green-200 text-green-800;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.summer-badge {
+    @apply bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800;
+    border: 1px solid rgba(234, 179, 8, 0.2);
+}
+
+.autumn-badge {
+    @apply bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800;
+    border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.winter-badge {
+    @apply bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+/* Detail Icons Colors */
+.crop-detail-item:nth-child(1) .crop-detail-icon {
+    color: #2E7D32; /* Region */
+}
+
+.crop-detail-item:nth-child(2) .crop-detail-icon {
+    color: #0288D1; /* Water */
+}
+
+.crop-detail-item:nth-child(3) .crop-detail-icon {
+    color: #D32F2F; /* Temperature */
+}
+
+.crop-detail-item:nth-child(4) .crop-detail-icon {
+    color: #FFA000; /* Soil */
+}
+
+/* View Details Button */
+.crop-card .btn-primary {
+    @apply w-full text-center mt-4;
+    background: linear-gradient(45deg, #2E7D32, #1B5E20);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.crop-card .btn-primary:hover {
+    background: linear-gradient(45deg, #1B5E20, #2E7D32);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+} 

@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="weather-container">
+    
     <div class="weather-header">
         <h1><i class="fas fa-cloud-sun"></i> Weather Intelligence Dashboard</h1>
         <p class="subtitle">Get hyper-local weather data for agricultural planning</p>
@@ -19,7 +20,12 @@
         </form>
     </div>
 
-    @if($weather)
+    @if(isset($error))
+    <div class="weather-error">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>{{ $error }}</p>
+    </div>
+    @elseif($weather)
     <div class="weather-card">
         <div class="weather-location">
             <h2><i class="fas fa-map-marker-alt"></i> {{ $city }}</h2>

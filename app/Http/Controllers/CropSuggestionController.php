@@ -5,41 +5,59 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CropSuggestion;
 use Illuminate\Support\Facades\Storage;
+use App\Services\WeatherService;
 
 class CropSuggestionController extends Controller
 {
+    protected $weatherService;
+
+    public function __construct(WeatherService $weatherService)
+    {
+        $this->weatherService = $weatherService;
+    }
+
     public function index()
     {
-        return view('crop_suggestions.index');
+        $city = 'Phagwara'; // Default city
+        $weather = $this->weatherService->getWeather($city);
+        return view('crop_suggestions.index', compact('weather', 'city'));
     }
 
     public function getSuggestions(Request $request)
-{
-    $validated = $request->validate([
-        'region' => 'required|string',
-        'soil_type' => 'required|string',
-        'season' => 'required|string',
-        'water_availability' => 'required|string',
-    ]);
+    {
+        $validated = $request->validate([
+            'region' => 'required|string',
+            'soil_type' => 'required|string',
+        ]);
 
-    $suggestions = CropSuggestion::where('region', $validated['region'])
-        ->where('soil_type', $validated['soil_type'])
-        ->where('season', $validated['season'])
-        ->where('water_availability', $validated['water_availability'])
-        ->get();
+        // Get all matching suggestions
+        $suggestions = CropSuggestion::where('region', $validated['region'])
+            ->where('soil_type', $validated['soil_type'])
+            ->get();
 
-    if ($suggestions->isEmpty()) {
-        return response()->json(['message' => 'No suitable crop suggestions found for your criteria.'], 200);
+        if ($suggestions->isEmpty()) {
+            return response()->json(['message' => 'No suitable crop suggestions found for your criteria.'], 200);
+        }
+
+        // Filter to ensure unique crop names
+        $uniqueSuggestions = collect();
+        $seenCropNames = [];
+        
+        foreach ($suggestions as $suggestion) {
+            if (!in_array($suggestion->crop_name, $seenCropNames)) {
+                $seenCropNames[] = $suggestion->crop_name;
+                $uniqueSuggestions->push($suggestion);
+            }
+        }
+
+        // Transform the suggestions to include image
+        $uniqueSuggestions->transform(function ($suggestion) {
+            $suggestion->image = $suggestion->image_url ?? asset('images/crops/default.jpg');
+            return $suggestion;
+        });
+
+        return response()->json($uniqueSuggestions);
     }
-
-    // Assuming 'image_url' column in your database contains the correct paths/URLs
-    $suggestions->transform(function ($suggestion) {
-        $suggestion->image = $suggestion->image_url ?? asset('images/crops/default.jpg');
-        return $suggestion;
-    });
-
-    return response()->json($suggestions);
-}
 
     public function store(Request $request)
     {

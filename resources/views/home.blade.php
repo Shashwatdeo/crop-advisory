@@ -9,7 +9,7 @@
             <a href="{{ route('crops.index') }}" class="btn btn-primary">
                 <i class="fas fa-seedling"></i> Explore Crop Database
             </a>
-            <a href="{{ route('crops.create') }}" class="btn btn-secondary">
+            <a href="{{ route('admin.crops.create') }}" class="btn btn-secondary">
                 <i class="fas fa-plus-circle"></i> Contribute Crop Data
             </a>
         </div>

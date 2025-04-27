@@ -7,16 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class PestAlert extends Model
 {
-use HasFactory;
+    use HasFactory;
 
-protected $fillable = [
-'title',
-'description',
-'crop_type',
-'region',
-'severity',
-'date',
-'location',
-'crop'
-];
+    protected $fillable = [
+        'title',
+        'description',
+        'pest_name',
+        'affected_crops',
+        'severity',
+        'status',
+        'alert_date',
+        'expiry_date',
+        'location',
+        'crop'
+    ];
+
+    protected $casts = [
+        'alert_date' => 'date',
+        'expiry_date' => 'date'
+    ];
 }

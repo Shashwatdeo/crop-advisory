@@ -1,462 +1,177 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="crops-container">
-    <div class="crops-header">
-        <h1><i class="fas fa-seedling"></i> Crop Database</h1>
-        <div class="header-actions">
-            <a href="{{ route('crops.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Add New Crop
-            </a>
+<div class="container mx-auto px-4 py-8">
+    <!-- Hero Section -->
+    <div class="crop-hero rounded-xl mb-10 animate-fade-in">
+        <div class="crop-hero-content">
+            <div>
+                <h1 class="crop-hero-title">Discover the Perfect Crops</h1>
+                <p class="crop-hero-subtitle">Find the ideal plants for your farm based on season and conditions</p>
+            </div>
         </div>
     </div>
 
-    <div class="search-filter">
-        <form method="GET" action="{{ route('crops.index') }}" class="search-form">
-            <div class="search-input-group">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" name="search" placeholder="Search crops..." value="{{ request('search') }}">
-                <button type="submit" class="search-button">Search</button>
+    <!-- Filter Section -->
+    <div class="filter-section animate-fade-in" style="animation-delay: 0.2s">
+        <h2 class="filter-title">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filter Crops
+        </h2>
+        <form action="{{ route('crops.index') }}" method="GET" class="filter-grid">
+            <div class="filter-group">
+                <label for="season" class="filter-label">Season</label>
+                <select id="season" name="season" class="filter-select">
+                    <option value="">All Seasons</option>
+                    <option value="spring" {{ request('season') === 'spring' ? 'selected' : '' }}>Spring</option>
+                    <option value="summer" {{ request('season') === 'summer' ? 'selected' : '' }}>Summer</option>
+                    <option value="autumn" {{ request('season') === 'autumn' ? 'selected' : '' }}>Autumn</option>
+                    <option value="winter" {{ request('season') === 'winter' ? 'selected' : '' }}>Winter</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="water" class="filter-label">Water Needs</label>
+                <select id="water" name="water" class="filter-select">
+                    <option value="">Any Water Level</option>
+                    <option value="low" {{ request('water') === 'low' ? 'selected' : '' }}>Low</option>
+                    <option value="medium" {{ request('water') === 'medium' ? 'selected' : '' }}>Medium</option>
+                    <option value="high" {{ request('water') === 'high' ? 'selected' : '' }}>High</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="temperature" class="filter-label">Temperature</label>
+                <select id="temperature" name="temperature" class="filter-select">
+                    <option value="">Any Temperature</option>
+                    <option value="cool" {{ request('temperature') === 'cool' ? 'selected' : '' }}>Cool</option>
+                    <option value="moderate" {{ request('temperature') === 'moderate' ? 'selected' : '' }}>Moderate</option>
+                    <option value="warm" {{ request('temperature') === 'warm' ? 'selected' : '' }}>Warm</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="sort" class="filter-label">Sort By</label>
+                <select id="sort" name="sort" class="filter-select">
+                    <option value="name" {{ request('sort') === 'name' ? 'selected' : '' }}>Name (A-Z)</option>
+                    <option value="season" {{ request('sort') === 'season' ? 'selected' : '' }}>Season</option>
+                    <option value="water_requirement" {{ request('sort') === 'water_requirement' ? 'selected' : '' }}>Water Needs</option>
+                </select>
+            </div>
+            <div class="filter-group col-span-full flex justify-end">
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                    Apply Filters
+                </button>
             </div>
         </form>
     </div>
 
-    @if($crops->isEmpty())
-        <div class="empty-state">
-            <i class="fas fa-leaf"></i>
-            <h3>No Crops Found</h3>
-            <p>There are currently no crops in the database. Add your first crop to get started.</p>
-            <a href="{{ route('crops.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Add First Crop
-            </a>
+    <!-- Results Count -->
+    <div class="flex justify-between items-center mb-6 animate-fade-in" style="animation-delay: 0.3s">
+        <h2 class="text-2xl font-semibold text-gray-800">
+            Available Crops <span class="text-gray-500 text-lg">({{ $crops->total() }} results)</span>
+        </h2>
+        <div class="flex items-center space-x-2">
+            <span class="text-sm text-gray-600">View:</span>
+            <button class="p-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+            </button>
+            <button class="p-2 rounded-lg bg-indigo-100 text-indigo-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                </svg>
+            </button>
         </div>
-    @else
-        <div class="crops-grid">
-        @foreach($crops as $index => $crop)
-                <div class="crop-card">
-                    <div class="crop-header">
-                        <h3>{{ $crop->name }}</h3>
-                        <span class="crop-id">
-                            @if(request('search'))
-                                #{{ $crop->id }}
-                            @else
-                                #{{ ($crops->firstItem() ?? 0) + $index }}
-                            @endif
-                        </span>
+    </div>
 
+    <!-- Crops Grid -->
+    @if($crops->count() > 0)
+        <div class="crop-grid">
+            @foreach($crops as $index => $crop)
+                <div class="crop-card animate-fade-in" style="animation-delay: {{ 0.4 + ($index * 0.1) }}s">
+                    <!-- Seasonal Badge -->
+                    <div class="seasonal-badge {{ $crop->season }}-badge">
+                        {{ ucfirst($crop->season) }}
                     </div>
-                    <div class="crop-body">
-                        <p class="crop-description">{{ Str::limit($crop->description, 150) }}</p>
-                        <div class="crop-meta">
-                            <div class="meta-item">
-                                <i class="fas fa-info-circle"></i>
-                                <span>{{ Str::limit($crop->ideal_conditions, 50) }}</span>
+                    
+                    <!-- Crop Image -->
+                    <div class="relative overflow-hidden h-48">
+                        <img src="{{ $crop->image_url ?? '/images/crop/' . strtolower($crop->name) . '.jpg' }}" 
+                             alt="{{ $crop->name }}" 
+                             class="crop-card-image w-full h-full object-cover">
+                    </div>
+                    
+                    <!-- Crop Content -->
+                    <div class="crop-card-content">
+                        <h3 class="crop-card-title">{{ $crop->name }}</h3>
+                        <p class="text-gray-600 mb-4">{{ Str::limit($crop->description, 100) }}</p>
+                        
+                        <div class="crop-card-details">
+                            <div class="crop-detail-item">
+                                <span class="crop-detail-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <span>{{ ucfirst($crop->season) }}</span>
+                            </div>
+                            <div class="crop-detail-item">
+                                <span class="crop-detail-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7.2 9.4a1 1 0 011.6 0l4 5.33a1 1 0 11-1.6 1.2L8 11.67 4.8 16a1 1 0 01-1.6-1.2l4-5.33zm8-4a1 1 0 011.6 0l4 5.33a1 1 0 11-1.6 1.2L16 7.67 12.8 12a1 1 0 01-1.6-1.2l4-5.33z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <span>{{ $crop->water_requirement }}</span>
+                            </div>
+                            <div class="crop-detail-item">
+                                <span class="crop-detail-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-1.9C4.045 12.733 2 10.352 2 7.5a4.5 4.5 0 018-2.828A4.5 4.5 0 0118 7.5c0 2.852-2.044 5.233-3.885 6.82a22.049 22.049 0 01-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 01-.69.001l-.002-.001z" />
+                                    </svg>
+                                </span>
+                                <span>{{ $crop->temperature_range }}</span>
+                            </div>
+                            <div class="crop-detail-item">
+                                <span class="crop-detail-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <span>View Details</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="crop-actions">
-                        <a href="{{ route('crops.show', $crop->id) }}" class="action-btn view-btn">
-                            <i class="fas fa-eye"></i> View
+                        
+                        <a href="{{ route('crops.show', $crop) }}" 
+                           class="btn-primary mt-4 inline-flex items-center justify-center px-4 py-2 rounded-lg">
+                            <span>Explore</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
                         </a>
-                        <a href="{{ route('crops.edit', $crop->id) }}" class="action-btn edit-btn">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <form action="{{ route('crops.destroy', $crop->id) }}" method="POST" class="delete-form">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this crop?')">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </form>
                     </div>
                 </div>
             @endforeach
         </div>
-
-        @if($crops->hasPages())
-        <div class="pagination-container">
-        {{ $crops->links() }}
+    @else
+        <!-- Empty State -->
+        <div class="empty-state animate-fade-in" style="animation-delay: 0.3s">
+            <div class="empty-state-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h3 class="empty-state-text font-bold mb-2">No Crops Found</h3>
+            <p class="text-gray-600 mb-4">Try adjusting your filters or come back later</p>
+            <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                Reset Filters
+            </button>
         </div>
-        @endif
     @endif
+
+    <!-- Pagination -->
+    <div class="mt-10 animate-fade-in" style="animation-delay: 0.5s">
+        {{ $crops->links() }}
+    </div>
 </div>
-
-<!-- <script>
-    const searchInput = document.querySelector('input[name="search"]');
-
-    searchInput.addEventListener('input', function () {
-        if (this.value === '') {
-            this.form.submit(); // Auto-submit when cleared
-        }
-    });
-</script> -->
-
-<script>
-    // Debounce search with clear-reset
-    function debounce(func, delay) {
-        let timer;
-        return function (...args) {
-            clearTimeout(timer);
-            timer = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
-
-    const searchInput = document.querySelector('input[name="search"]');
-    const searchForm = searchInput.closest('form');
-
-    const handleSearch = debounce(() => {
-        searchForm.submit();
-    }, 500);
-
-    searchInput.addEventListener('input', handleSearch);
-</script>
-
-
-
-
-<style>
-    /* Main Container */
-    .crops-container {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 1.5rem;
-    }
-
-    /* Header */
-    .crops-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-    }
-
-    .crops-header h1 {
-        font-size: 2rem;
-        color: var(--primary-dark);
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-    }
-
-    /* Buttons */
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.7rem 1.2rem;
-        border-radius: 6px;
-        font-weight: 500;
-        text-decoration: none;
-        transition: var(--transition);
-    }
-
-    .btn-primary {
-        background: var(--primary-color);
-        color: white;
-        border: 1px solid var(--primary-color);
-    }
-
-    .btn-primary:hover {
-        background: var(--primary-dark);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
-    }
-
-    /* Search Filter */
-    .search-filter {
-        margin-bottom: 2rem;
-    }
-
-    .search-form {
-        width: 100%;
-    }
-
-    .search-input-group {
-        display: flex;
-        align-items: center;
-        background: white;
-        border-radius: 6px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-
-    .search-input-group i {
-        padding: 0 1rem;
-        color: #666;
-    }
-
-    .search-input-group input {
-        flex: 1;
-        border: none;
-        padding: 0.8rem 0;
-        font-size: 1rem;
-        outline: none;
-    }
-
-    .search-button {
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 0.8rem 1.5rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .search-button:hover {
-        background: var(--primary-dark);
-    }
-
-    /* Empty State */
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .empty-state i {
-        font-size: 3rem;
-        color: var(--primary-light);
-        margin-bottom: 1rem;
-    }
-
-    .empty-state h3 {
-        color: var(--primary-dark);
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state p {
-        color: #666;
-        margin-bottom: 1.5rem;
-    }
-
-    /* Crops Grid */
-    .crops-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    /* Crop Card */
-    .crop-card {
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-        transition: var(--transition);
-    }
-
-    .crop-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    }
-
-    .crop-header {
-        padding: 1.2rem 1.5rem;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .crop-header h3 {
-        margin: 0;
-        color: var(--primary-dark);
-        font-size: 1.2rem;
-    }
-
-    .crop-id {
-        font-size: 0.8rem;
-        background: #f5f5f5;
-        padding: 0.2rem 0.5rem;
-        border-radius: 50px;
-        color: #666;
-    }
-
-    .crop-body {
-        padding: 1.5rem;
-    }
-
-    .crop-description {
-        color: #444;
-        margin-bottom: 1rem;
-        line-height: 1.5;
-    }
-
-    .crop-meta {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.9rem;
-        color: #666;
-    }
-
-    .meta-item i {
-        color: var(--primary-color);
-    }
-
-    /* Crop Actions */
-    .crop-actions {
-        display: flex;
-        border-top: 1px solid #eee;
-    }
-
-    .action-btn {
-        flex: 1;
-        padding: 0.8rem;
-        border: none;
-        background: white;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-    .view-btn {
-        color: var(--primary-color);
-        border-right: 1px solid #eee;
-    }
-
-    .view-btn:hover {
-        background: rgba(46, 125, 50, 0.05);
-    }
-
-    .edit-btn {
-        color: #ff9800;
-        border-right: 1px solid #eee;
-    }
-
-    .edit-btn:hover {
-        background: rgba(255, 152, 0, 0.05);
-    }
-
-    .delete-btn {
-        color: #f44336;
-    }
-
-    .delete-btn:hover {
-        background: rgba(244, 67, 54, 0.05);
-    }
-
-    .delete-form {
-        flex: 1;
-        display: flex;
-    }
-
-    /* Pagination */
-    .pagination-container {
-        margin: 3rem 0 1rem;
-        display: flex;
-        justify-content: center;
-    }
-
-    .pagination {
-        display: flex;
-        list-style: none;
-        padding: 0;
-        gap: 0.5rem;
-    }
-
-    .page-item {
-        margin: 0;
-    }
-
-    .page-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 40px;
-        height: 40px;
-        padding: 0 0.75rem;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        background: white;
-        color: #4a5568;
-        font-weight: 500;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .page-item.active .page-link {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
-        box-shadow: 0 2px 4px rgba(46, 125, 50, 0.2);
-    }
-
-    .page-link:not(.active):hover {
-        background: #f7fafc;
-        border-color: #cbd5e0;
-        transform: translateY(-1px);
-    }
-
-    .page-item.disabled .page-link {
-        color: #a0aec0;
-        background: #f8f9fa;
-        border-color: #e2e8f0;
-        cursor: not-allowed;
-        opacity: 0.7;
-    }
-
-    /* Responsive adjustments */
-      @media (max-width: 640px) {
-        .pagination {
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .page-link {
-            min-width: 36px;
-            height: 36px;
-            padding: 0 0.5rem;
-            font-size: 0.875rem;
-        }
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 640px) {
-        .pagination {
-            flex-wrap: wrap;
-            gap: 0.25rem;
-        }
-        
-        .page-link {
-            min-width: 36px;
-            height: 36px;
-            padding: 0 0.5rem;
-            font-size: 0.875rem;
-        }
-        
-        .page-item:first-child .page-link,
-        .page-item:last-child .page-link {
-            padding: 0 0.75rem;
-        }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .crops-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-
-        .crops-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
 @endsection

@@ -12,7 +12,26 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Poppins', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                primary: {
+                    DEFAULT: '#2E7D32',
+                    dark: '#1B5E20',
+                    light: '#81C784',
+                },
+                secondary: {
+                    DEFAULT: '#FFA000',
+                    dark: '#FF8F00',
+                    light: '#FFB74D',
+                },
+            },
+            boxShadow: {
+                'custom': '0 4px 6px rgba(0, 0, 0, 0.1)',
+            },
+            transitionProperty: {
+                'height': 'height',
+                'spacing': 'margin, padding',
             },
         },
     },
